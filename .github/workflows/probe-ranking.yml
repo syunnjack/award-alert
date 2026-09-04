@@ -1,0 +1,16 @@
+name: Probe ranking
+on:
+  workflow_dispatch:
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-python@v5
+        with: { python-version: '3.12' }
+      - env:
+          RAKUTEN_ICHIBA_APP_ID: ${{ secrets.RAKUTEN_ICHIBA_APP_ID }}
+          RAKUTEN_ICHIBA_ACCESS_KEY: ${{ secrets.RAKUTEN_ICHIBA_ACCESS_KEY }}
+          RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
+          PYTHONIOENCODING: utf-8
+        run: python scripts/probe_ranking.py
