@@ -1,6 +1,11 @@
 name: Probe ranking
 on:
   workflow_dispatch:
+    inputs:
+      site:
+        description: 'Referer に使うドメイン（楽天のアプリで許可済みのもの）'
+        type: string
+        default: 'https://gravure-meikan.jp'
 jobs:
   probe:
     runs-on: ubuntu-latest
@@ -12,5 +17,6 @@ jobs:
           RAKUTEN_ICHIBA_APP_ID: ${{ secrets.RAKUTEN_ICHIBA_APP_ID }}
           RAKUTEN_ICHIBA_ACCESS_KEY: ${{ secrets.RAKUTEN_ICHIBA_ACCESS_KEY }}
           RAKUTEN_AFFILIATE_ID: ${{ secrets.RAKUTEN_AFFILIATE_ID }}
+          SITE_URL: ${{ inputs.site || 'https://gravure-meikan.jp' }}
           PYTHONIOENCODING: utf-8
         run: python scripts/probe_ranking.py
