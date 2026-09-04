@@ -41,10 +41,30 @@ def call(url, extra):
         return 0, str(error)[:160]
 
 
+def dump_item_fields():
+    """商品検索が返す項目を見る。**レビュー件数と平均点があるか**が知りたい。"""
+    status, payload = call('https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701',
+                           {'keyword': '財布', 'hits': 2})
+    if status != 200 or not isinstance(payload, dict):
+        print(f'商品検索: {status} {str(payload)[:120]}')
+        return
+    items = payload.get('Items') or payload.get('items') or []
+    if not items:
+        print('商品検索: 件数0  トップのキー=', list(payload)[:8])
+        return
+    item = items[0].get('Item', items[0])
+    print('商品検索が返す項目:', sorted(item)[:40])
+    for key in ('reviewCount', 'reviewAverage', 'shopCode', 'shopName', 'itemCode', 'itemPrice'):
+        print(f'   {key} = {item.get(key)!r}')
+
+
 def main():
     if not APP or not KEY:
         print('鍵がありません。', file=sys.stderr)
         return 1
+
+    dump_item_fields()
+    print()
 
     for label, url in CANDIDATES:
         if 'IchibaItem/Search' in url:
