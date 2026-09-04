@@ -16,12 +16,12 @@ AFF = os.environ.get('RAKUTEN_AFFILIATE_ID', '').strip()
 SITE = os.environ.get('SITE_URL', 'https://castalert.jp').rstrip('/')
 
 CANDIDATES = [
-    ('新・Ranking 20260701', 'https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Ranking/20260701'),
-    ('新・Ranking 20220601', 'https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Ranking/20220601'),
-    ('新・Ranking（版なし）', 'https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Ranking'),
-    ('旧・Ranking 20220601', 'https://app.rakuten.co.jp/services/api/IchibaItem/Ranking/20220601'),
-    ('新・GenreSearch', 'https://openapi.rakuten.co.jp/ichibams/api/IchibaGenre/Search/20260701'),
-    ('旧・GenreSearch', 'https://app.rakuten.co.jp/services/api/IchibaGenre/Search/20140222'),
+    ('ichibams/IchibaItem/Ranking', 'https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Ranking/20260701'),
+    ('ichibaranking/Ranking', 'https://openapi.rakuten.co.jp/ichibaranking/api/IchibaItem/Ranking/20260701'),
+    ('ichibams/Ranking', 'https://openapi.rakuten.co.jp/ichibams/api/Ranking/20260701'),
+    ('ichibams/IchibaGenre/Search', 'https://openapi.rakuten.co.jp/ichibams/api/IchibaGenre/Search/20260701'),
+    ('ichibagenre/IchibaGenre/Search', 'https://openapi.rakuten.co.jp/ichibagenre/api/IchibaGenre/Search/20260701'),
+    ('ichibams/IchibaItem/Search（対照）', 'https://openapi.rakuten.co.jp/ichibams/api/IchibaItem/Search/20260701'),
 ]
 
 
@@ -47,7 +47,12 @@ def main():
         return 1
 
     for label, url in CANDIDATES:
-        extra = {'genreId': 0} if 'Genre' in url else {'genreId': 0, 'age': 30, 'sex': 0}
+        if 'IchibaItem/Search' in url:
+            extra = {'keyword': '財布', 'hits': 2}
+        elif 'Genre' in url:
+            extra = {'genreId': 0}
+        else:
+            extra = {'genreId': 0}
         status, payload = call(url, extra)
 
         if status == 200 and isinstance(payload, dict):
